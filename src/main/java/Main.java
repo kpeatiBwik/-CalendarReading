@@ -9,6 +9,7 @@ public class Main {
     private static final long day = 86400000;
     private static Scanner sc = new Scanner(System.in);
     private static Map<String, Double> stringMap = getContentFromFile(file);
+    private static String TODAY = simpleFormatter.format(new Date(new Date().getTime()));
 
     public static void main(String[] args) throws IOException {
         menu();
@@ -72,7 +73,7 @@ public class Main {
 
     private static void setContentToFile(File file, Map<String, Double> stringMap, double x) {
         if (stringMap.size() == 0) {
-            stringMap.put(simpleFormatter.format(new Date(new Date().getTime())), -1.0);
+            stringMap.put(TODAY, -1.0);
         } else {
             for (int i = 0; i <= 42; i++) {
                 if (!stringMap.containsKey(simpleFormatter.format(new Date(new Date().getTime() - day * i)))) {
@@ -80,10 +81,9 @@ public class Main {
                 } else break;
             }
 
-            if (stringMap.get(simpleFormatter.format(new Date(new Date().getTime()))) != -1.0) {
-                stringMap.put(simpleFormatter.format(new Date(new Date().getTime())),
-                        stringMap.get(simpleFormatter.format(new Date(new Date().getTime()))) + x);
-            } else stringMap.put(simpleFormatter.format(new Date(new Date().getTime())), x < 1.0 ? -1 + x : x);
+            if (stringMap.get(TODAY) != -1.0) {
+                stringMap.put(TODAY, stringMap.get(simpleFormatter.format(new Date(new Date().getTime()))) + x);
+            } else stringMap.put(TODAY, x < 1.0 ? -1 + x : x);
         }
 
         try {
