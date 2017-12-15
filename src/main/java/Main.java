@@ -72,15 +72,20 @@ public class Main {
 
     private static void setContentToFile(File file, Map<String, Double> stringMap, double x) {
         if (stringMap.size() == 0) {
-            stringMap.put(simpleFormatter.format(new Date(new Date().getTime())), x < 1.0 ? -1 + x : x);
+            stringMap.put(simpleFormatter.format(new Date(new Date().getTime())), -1.0);
         } else {
             for (int i = 0; i <= 42; i++) {
                 if (!stringMap.containsKey(simpleFormatter.format(new Date(new Date().getTime() - day * i)))) {
                     stringMap.put(simpleFormatter.format(new Date(new Date().getTime() - day * i)), -1.0);
                 } else break;
             }
-            stringMap.put(simpleFormatter.format(new Date(new Date().getTime())), x < 1.0 ? -1 + x : x);
+
+            if (stringMap.get(simpleFormatter.format(new Date(new Date().getTime()))) != -1.0) {
+                stringMap.put(simpleFormatter.format(new Date(new Date().getTime())),
+                        stringMap.get(simpleFormatter.format(new Date(new Date().getTime()))) + x);
+            } else stringMap.put(simpleFormatter.format(new Date(new Date().getTime())), x < 1.0 ? -1 + x : x);
         }
+
         try {
             FileWriter writer = new FileWriter(file, false);
             BufferedWriter bufferWriter = new BufferedWriter(writer);
