@@ -1,16 +1,12 @@
 import java.io.*;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 
 public class Main {
-    private static SimpleDateFormat simpleFormatter = new SimpleDateFormat("dd.MM.yyyy");
     private static File file = new File("src\\main\\resources\\data.csv");
-    //src\main\resources\
-    private static final long day = 86400000;
     private static Scanner sc = new Scanner(System.in);
-    private static Map<String, Double> stringMap = getContentFromFile(file);
-    private static final String TODAY = simpleFormatter.format(new Date());
-    private static final long TODAY_LONG = new Date().getTime();
+    private static Map<LocalDate, Double> stringMap = getContentFromFile(file);
+    private static final LocalDate LOCAL_DATE = LocalDate.now();
 
     public static void main(String[] args) throws IOException {
         menu();
@@ -46,17 +42,17 @@ public class Main {
         }
     }
 
-    private static double calc(Map<String, Double> map) {
+    private static double calc(Map<LocalDate, Double> map) {
         double result = 0;
-        for (String key : map.keySet()) {
+        for (LocalDate key : map.keySet()) {
             Double value = map.get(key);
             result += value;
         }
         return result;
     }
 
-    private static Map<String, Double> getContentFromFile(File file) {
-        Map<String, Double> result = new HashMap<>();
+    private static Map<LocalDate, Double> getContentFromFile(File file) {
+        Map<LocalDate, Double> result = new HashMap<>();
         try {
             FileReader reader = new FileReader(file);
             BufferedReader bufferedReader = new BufferedReader(reader);
@@ -64,7 +60,7 @@ public class Main {
             String[] tmp;
             while ((line = bufferedReader.readLine()) != null) {
                 tmp = line.split(" ");
-                result.put(tmp[0], Double.parseDouble(tmp[1]));
+                result.put(LocalDate.parse(tmp[0]), Double.parseDouble(tmp[1]));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -72,25 +68,24 @@ public class Main {
         return result;
     }
 
-    private static void setContentToFile(File file, Map<String, Double> stringMap, double x) {
+    private static void setContentToFile(File file, Map<LocalDate, Double> stringMap, double x) {
         if (stringMap.size() == 0) {
-            stringMap.put(TODAY, -1.0);
+            stringMap.put(LOCAL_DATE, -1.0);
         } else {
             for (int i = 0; i <= 42; i++) {
-                if (!stringMap.containsKey(simpleFormatter.format(new Date(TODAY_LONG - day * i)))) {
-                    stringMap.put(simpleFormatter.format(new Date(TODAY_LONG - day * i)), -1.0);
+                if (!stringMap.containsKey(LOCAL_DATE.minusDays(i))) {
+                    stringMap.put(LOCAL_DATE.minusDays(i), -1.0);
                 } else break;
             }
-
-            if (stringMap.get(TODAY) != -1.0) {
-                stringMap.put(TODAY, stringMap.get(simpleFormatter.format(new Date(TODAY_LONG))) + x);
-            } else stringMap.put(TODAY, x < 1.0 ? -1 + x : x);
+            if (stringMap.get(LOCAL_DATE) != -1.0) {
+                stringMap.put(LOCAL_DATE, stringMap.get(LOCAL_DATE) + x);
+            } else stringMap.put(LOCAL_DATE, x <= 1.0 ? -1 + x : x);
         }
 
         try {
             FileWriter writer = new FileWriter(file, false);
             BufferedWriter bufferWriter = new BufferedWriter(writer);
-            for (Map.Entry<String, Double> entry : stringMap.entrySet()) {
+            for (Map.Entry<LocalDate, Double> entry : stringMap.entrySet()) {
                 bufferWriter.write(entry.getKey() + " " + entry.getValue() + "\n");
             }
             bufferWriter.close();
