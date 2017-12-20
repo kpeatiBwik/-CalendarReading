@@ -6,7 +6,6 @@ public class Main {
     private static File file = new File("src\\main\\resources\\data.csv");
     private static Scanner sc = new Scanner(System.in);
     private static Map<LocalDate, Double> stringMap = getContentFromFile(file);
-    private static final LocalDate LOCAL_DATE = LocalDate.now();
 
     public static void main(String[] args) throws IOException {
         menu();
@@ -69,6 +68,7 @@ public class Main {
     }
 
     private static void setContentToFile(File file, Map<LocalDate, Double> stringMap, double x) {
+        LocalDate LOCAL_DATE = LocalDate.now();
         if (stringMap.size() == 0) {
             stringMap.put(LOCAL_DATE, -1.0);
         } else {
